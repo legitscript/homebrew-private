@@ -5,11 +5,11 @@ class ElasticsearchForPrivate < Formula
   version "2.4.1"
   sha256 "23a369ef42955c19aaaf9e34891eea3a055ed217d7fbe76da0998a7a54bbe167"
 
-  head do
-    url "https://github.com/legitscript/homebrew-private.git"
-    depends_on :java => "1.8"
-    depends_on "gradle" => :build
-  end
+  # head do
+  #   url "https://github.com/legitscript/homebrew-private.git"
+  #   depends_on :java => "1.8"
+  #   depends_on "gradle" => :build
+  # end
 
   bottle :unneeded
 
@@ -48,12 +48,11 @@ class ElasticsearchForPrivate < Formula
 
     inreplace "#{libexec}/bin/elasticsearch.in.sh" do |s|
       # Configure ES_HOME
-      # if build.devel? || build.head?
-      #   s.sub!(%r{#\!/bin/bash\n}, "#!/bin/bash\n\nES_HOME=#{libexec}")
-      # else
-      #   s.sub!(%r{#\!/bin/sh\n}, "#!/bin/sh\n\nES_HOME=#{libexec}")
-      # end
-      s.sub!(%r{#\!/bin/bash\n}, "#!/bin/bash\n\nES_HOME=#{libexec}")
+      if build.devel? || build.head?
+        s.sub!(%r{#\!/bin/bash\n}, "#!/bin/bash\n\nES_HOME=#{libexec}")
+      else
+        s.sub!(%r{#\!/bin/sh\n}, "#!/bin/sh\n\nES_HOME=#{libexec}")
+      end
     end
 
     plugin=(build.devel? || build.head?) ? "#{libexec}/bin/elasticsearch-plugin" : "#{libexec}/bin/plugin"
