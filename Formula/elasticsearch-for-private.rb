@@ -48,14 +48,16 @@ class ElasticsearchForPrivate < Formula
 
     inreplace "#{libexec}/bin/elasticsearch.in.sh" do |s|
       # Configure ES_HOME
-      if build.devel? || build.head?
-        s.sub!(%r{#\!/bin/bash\n}, "#!/bin/bash\n\nES_HOME=#{libexec}")
-      else
-        s.sub!(%r{#\!/bin/sh\n}, "#!/bin/sh\n\nES_HOME=#{libexec}")
-      end
+      # if build.devel? || build.head?
+      #   s.sub!(%r{#\!/bin/bash\n}, "#!/bin/bash\n\nES_HOME=#{libexec}")
+      # else
+      #   s.sub!(%r{#\!/bin/sh\n}, "#!/bin/sh\n\nES_HOME=#{libexec}")
+      # end
+      s.sub!(%r{#\!/bin/sh\n}, "#!/bin/sh\n\nES_HOME=#{libexec}")
     end
 
-    plugin=(build.devel? || build.head?) ? "#{libexec}/bin/elasticsearch-plugin" : "#{libexec}/bin/plugin"
+    #plugin=(build.devel? || build.head?) ? "#{libexec}/bin/elasticsearch-plugin" : "#{libexec}/bin/plugin"
+    plugin="#{libexec}/bin/plugin"
     inreplace plugin do |s|
       # Add the proper ES_CLASSPATH configuration
       s.sub!(/SCRIPT="\$0"/, %(SCRIPT="$0"\nES_CLASSPATH=#{libexec}/lib))
@@ -69,9 +71,9 @@ class ElasticsearchForPrivate < Formula
     (libexec/"config").rmtree
 
     bin.write_exec_script Dir[libexec/"bin/elasticsearch"]
-    if build.devel? || build.head?
-      bin.write_exec_script Dir[libexec/"bin/elasticsearch-plugin"]
-    end
+    # if build.devel? || build.head?
+    #   bin.write_exec_script Dir[libexec/"bin/elasticsearch-plugin"]
+    # end
   end
 
   def post_install
